@@ -1,0 +1,3545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>KLATCH — Luxury Watches</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --black: #050505;
+            --black-2: #0b0b0b;
+            --card: #111111;
+            --red: #e50914;
+            --red-dark: #9f0008;
+            --white: #ffffff;
+            --gray: #9b9b9b;
+            --border: rgba(255,255,255,0.08);
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: "Inter", sans-serif;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button,
+        input,
+        textarea {
+            font-family: inherit;
+        }
+
+        .container {
+            width: min(1180px, 90%);
+            margin: auto;
+        }
+
+        .red {
+            color: var(--red);
+        }
+
+
+        /* =====================================================
+           CUSTOM CURSOR
+        ===================================================== */
+
+        .cursor {
+            position: fixed;
+            width: 9px;
+            height: 9px;
+            background: #fff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: difference;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 35px;
+            height: 35px;
+            border: 1px solid rgba(229,9,20,.7);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition:
+                width .25s ease,
+                height .25s ease,
+                border-color .25s ease;
+        }
+
+        .cursor-ring.hover {
+            width: 65px;
+            height: 65px;
+            border-color: var(--red);
+        }
+
+        .cursor-dot {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--red);
+            pointer-events: none;
+            z-index: 99997;
+            opacity: .7;
+        }
+
+        .mouse-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            background: radial-gradient(
+                circle,
+                rgba(229,9,20,.08),
+                transparent 70%
+            );
+            transform: translate(-50%, -50%);
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            background: rgba(5,5,5,0.72);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav {
+            height: 78px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: "Playfair Display", serif;
+            font-size: 27px;
+            font-weight: 700;
+            letter-spacing: 4px;
+        }
+
+        .logo span {
+            color: var(--red);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #cfcfcf;
+            font-size: 14px;
+            transition: .3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--red);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.03);
+            color: white;
+            cursor: none;
+            transition: .3s;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            border-color: var(--red);
+            color: var(--red);
+            transform: translateY(-2px);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -4px;
+            right: -3px;
+            background: var(--red);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn {
+            display: none;
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: var(--red);
+            filter: blur(220px);
+            opacity: .13;
+            right: -150px;
+            top: 100px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 620px;
+            padding-top: 70px;
+            animation: heroEnter 1.2s ease forwards;
+        }
+
+        @keyframes heroEnter {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-small {
+            color: var(--red);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(60px, 8vw, 105px);
+            line-height: .9;
+            margin-bottom: 28px;
+        }
+
+        .hero h1 span {
+            color: transparent;
+            -webkit-text-stroke: 1px #fff;
+        }
+
+        .hero p {
+            color: var(--gray);
+            max-width: 500px;
+            line-height: 1.8;
+            font-size: 15px;
+            margin-bottom: 35px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 15px 27px;
+            border-radius: 3px;
+            border: 1px solid transparent;
+            cursor: none;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: .5px;
+            transition: .3s;
+        }
+
+        .btn-primary {
+            background: var(--red);
+            color: white;
+            box-shadow: 0 0 30px rgba(229,9,20,.2);
+        }
+
+        .btn-primary:hover {
+            background: #ff1621;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(229,9,20,.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border-color: rgba(255,255,255,.2);
+            color: white;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+
+        /* =====================================================
+           HERO WATCH
+        ===================================================== */
+
+        .hero-watch {
+            position: absolute;
+            right: 5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle, #252525 0%, #111 55%, #050505 70%);
+            box-shadow:
+                0 0 80px rgba(229,9,20,.12),
+                inset 0 0 80px #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: floatingWatch 5s ease-in-out infinite;
+        }
+
+        @keyframes floatingWatch {
+            0%,100% {
+                transform: translateY(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateY(-50%) translateY(-15px);
+            }
+        }
+
+        .watch-face {
+            width: 270px;
+            height: 270px;
+            border-radius: 50%;
+            border: 12px solid #252525;
+            background: radial-gradient(circle, #111 20%, #030303 80%);
+            position: relative;
+            box-shadow:
+                0 0 30px rgba(0,0,0,.9),
+                inset 0 0 30px rgba(255,255,255,.05);
+        }
+
+        .watch-face::before {
+            content: "KLATCH";
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: "Playfair Display", serif;
+            letter-spacing: 2px;
+            font-size: 13px;
+        }
+
+        .watch-face::after {
+            content: "AUTOMATIC";
+            position: absolute;
+            top: 105px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 6px;
+            letter-spacing: 2px;
+            color: #777;
+        }
+
+        .hand {
+            position: absolute;
+            width: 2px;
+            height: 80px;
+            background: white;
+            left: 50%;
+            bottom: 50%;
+            transform-origin: bottom;
+            transform: rotate(35deg);
+        }
+
+        .hand.second {
+            height: 95px;
+            width: 1px;
+            background: var(--red);
+            transform: rotate(145deg);
+        }
+
+        .center-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: var(--red);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+
+        /* =====================================================
+           SECTION
+        ===================================================== */
+
+        section {
+            padding: 110px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            margin-bottom: 45px;
+        }
+
+        .section-label {
+            color: var(--red);
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-family: "Playfair Display", serif;
+            font-size: 46px;
+        }
+
+        .section-description {
+            color: var(--gray);
+            max-width: 400px;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           COLLECTION CONTROLS
+        ===================================================== */
+
+        .collection-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .collection-count {
+            color: #666;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .collection-count span {
+            color: var(--red);
+        }
+
+
+        /* =====================================================
+           PRODUCTS
+        ===================================================== */
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .product-card {
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.045),
+                    rgba(255,255,255,.01)
+                );
+
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition:
+                transform .5s cubic-bezier(.2,.8,.2,1),
+                border-color .4s,
+                box-shadow .4s;
+
+            position: relative;
+
+            opacity: 0;
+            transform: translateY(35px);
+        }
+
+        .product-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .product-card:hover {
+            transform:
+                translateY(-12px)
+                rotateX(2deg)
+                rotateY(-2deg);
+
+            border-color: rgba(229,9,20,.45);
+
+            box-shadow:
+                0 25px 60px rgba(0,0,0,.6),
+                0 0 35px rgba(229,9,20,.07);
+        }
+
+        .product-card::before {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background: var(--red);
+            opacity: 0;
+            filter: blur(90px);
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            transition: .5s;
+            pointer-events: none;
+        }
+
+        .product-card:hover::before {
+            opacity: .13;
+        }
+
+        .product-image {
+            height: 270px;
+            background:
+                radial-gradient(
+                    circle at center,
+                    #252525,
+                    #090909 68%
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::after {
+            content: "";
+            position: absolute;
+            width: 80%;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,.1),
+                transparent
+            );
+            bottom: 20px;
+        }
+
+
+        /* =====================================================
+           MINI WATCH
+        ===================================================== */
+
+        .mini-watch {
+            width: 145px;
+            height: 145px;
+            border-radius: 50%;
+            background:
+                radial-gradient(
+                    circle,
+                    #222,
+                    #050505 70%
+                );
+
+            border: 9px solid #2d2d2d;
+
+            box-shadow:
+                0 15px 35px #000,
+                inset 0 0 20px rgba(255,255,255,.05);
+
+            position: relative;
+
+            transition:
+                transform .6s cubic-bezier(.2,.8,.2,1),
+                box-shadow .5s;
+        }
+
+        .product-card:hover .mini-watch {
+            transform:
+                scale(1.12)
+                rotate(7deg);
+
+            box-shadow:
+                0 25px 50px #000,
+                0 0 35px rgba(229,9,20,.12);
+        }
+
+        .mini-watch::before {
+            content: "";
+            position: absolute;
+            width: 4px;
+            height: 52px;
+            background: white;
+            left: 50%;
+            bottom: 50%;
+            transform: rotate(45deg);
+            transform-origin: bottom;
+        }
+
+        .mini-watch::after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 63px;
+            background: var(--red);
+            left: 50%;
+            bottom: 50%;
+            transform: rotate(140deg);
+            transform-origin: bottom;
+        }
+
+
+        /* Different watch styles */
+
+        .watch-red {
+            border-color: #661016;
+        }
+
+        .watch-silver {
+            border-color: #555;
+        }
+
+        .watch-dark {
+            border-color: #1b1b1b;
+        }
+
+        .watch-gold {
+            border-color: #65522d;
+        }
+
+        .watch-steel {
+            border-color: #777;
+        }
+
+        .watch-crimson {
+            border-color: #85141b;
+        }
+
+
+        /* =====================================================
+           PRODUCT INFO
+        ===================================================== */
+
+        .product-info {
+            padding: 19px;
+        }
+
+        .product-category {
+            color: var(--red);
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .product-name {
+            font-family: "Playfair Display", serif;
+            font-size: 20px;
+            margin: 7px 0;
+        }
+
+        .product-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .price {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .add-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: white;
+            cursor: none;
+            transition: .3s;
+            font-size: 18px;
+        }
+
+        .add-btn:hover {
+            background: var(--red);
+            border-color: var(--red);
+            transform: rotate(90deg);
+        }
+
+
+        /* =====================================================
+           COLLECTION DIVIDER
+        ===================================================== */
+
+        .collection-divider {
+            margin: 65px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .collection-divider::before,
+        .collection-divider::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: var(--border);
+        }
+
+        .collection-divider span {
+            color: #555;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+
+        /* =====================================================
+           ABOUT
+        ===================================================== */
+
+        .about {
+            background: #080808;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .about-image {
+            height: 500px;
+            border: 1px solid var(--border);
+            background:
+                radial-gradient(
+                    circle at center,
+                    #202020,
+                    #060606 70%
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-image::before {
+            content: "KLATCH";
+            position: absolute;
+            font-family: "Playfair Display", serif;
+            font-size: 100px;
+            color: rgba(255,255,255,.02);
+            transform: rotate(-90deg);
+        }
+
+        .large-watch {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            border: 15px solid #292929;
+            background: #050505;
+            box-shadow: 0 30px 80px #000;
+            position: relative;
+            animation: aboutFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes aboutFloat {
+            0%,100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        .large-watch::before {
+            content: "";
+            position: absolute;
+            width: 5px;
+            height: 100px;
+            background: white;
+            left: 50%;
+            bottom: 50%;
+            transform: rotate(35deg);
+            transform-origin: bottom;
+        }
+
+        .large-watch::after {
+            content: "";
+            position: absolute;
+            width: 2px;
+            height: 115px;
+            background: var(--red);
+            left: 50%;
+            bottom: 50%;
+            transform: rotate(155deg);
+            transform-origin: bottom;
+        }
+
+        .about-text h2 {
+            font-family: "Playfair Display", serif;
+            font-size: 55px;
+            line-height: 1;
+            margin-bottom: 25px;
+        }
+
+        .about-text p {
+            color: var(--gray);
+            line-height: 1.9;
+            margin-bottom: 25px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 50px;
+            margin-top: 35px;
+        }
+
+        .stat h3 {
+            font-family: "Playfair Display", serif;
+            font-size: 30px;
+        }
+
+        .stat p {
+            font-size: 11px;
+            color: #777;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+
+        /* =====================================================
+           CONTACT
+        ===================================================== */
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: .8fr 1.2fr;
+            gap: 70px;
+        }
+
+        .contact-info h2 {
+            font-family: "Playfair Display", serif;
+            font-size: 50px;
+            line-height: 1.05;
+            margin-bottom: 20px;
+        }
+
+        .contact-info > p {
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 35px;
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+            align-items: center;
+        }
+
+        .contact-icon {
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--red);
+        }
+
+        .contact-item small {
+            display: block;
+            color: #777;
+            margin-bottom: 4px;
+        }
+
+        .contact-item span {
+            font-size: 14px;
+        }
+
+        .contact-form {
+            background: #0c0c0c;
+            border: 1px solid var(--border);
+            padding: 35px;
+            border-radius: 8px;
+        }
+
+        .contact-form h3 {
+            font-family: "Playfair Display", serif;
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 17px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            background: #050505;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 14px;
+            outline: none;
+            transition: .3s;
+            border-radius: 3px;
+        }
+
+        .input-group textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            border-color: var(--red);
+            box-shadow: 0 0 15px rgba(229,9,20,.08);
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 45px 0 25px;
+            background: #030303;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 35px;
+        }
+
+        .footer-text {
+            color: #666;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .socials {
+            display: flex;
+            gap: 10px;
+        }
+
+        .socials a {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: .3s;
+            font-size: 12px;
+            cursor: none;
+        }
+
+        .socials a:hover {
+            color: var(--red);
+            border-color: var(--red);
+            transform: translateY(-4px);
+        }
+
+        .copyright {
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            color: #555;
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.78);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-box {
+            width: min(600px,100%);
+            background: #0c0c0c;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 8px;
+            padding: 35px;
+            position: relative;
+            animation: modalIn .3s ease;
+            box-shadow: 0 30px 100px #000;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(25px) scale(.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 17px;
+            border: none;
+            background: none;
+            color: #888;
+            font-size: 25px;
+            cursor: none;
+        }
+
+        .close:hover {
+            color: var(--red);
+        }
+
+        .modal-watch {
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(
+                    circle,
+                    #222,
+                    #080808 70%
+                );
+
+            margin-bottom: 25px;
+        }
+
+        .modal-watch .mini-watch {
+            width: 190px;
+            height: 190px;
+        }
+
+        .modal h2 {
+            font-family: "Playfair Display", serif;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .modal p {
+            color: var(--gray);
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .modal-price {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+
+        /* =====================================================
+           CART
+        ===================================================== */
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cart-item-info h4 {
+            font-family: "Playfair Display", serif;
+            font-size: 18px;
+        }
+
+        .cart-item-info span {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .remove-btn {
+            border: none;
+            background: none;
+            color: #777;
+            cursor: none;
+        }
+
+        .remove-btn:hover {
+            color: var(--red);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            margin: 25px 0;
+            font-size: 18px;
+        }
+
+        .empty-cart {
+            color: #777;
+            text-align: center;
+            padding: 30px 0;
+        }
+
+
+        /* =====================================================
+           TOAST
+        ===================================================== */
+
+        .toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #111;
+            border: 1px solid rgba(229,9,20,.4);
+            padding: 15px 20px;
+            border-radius: 4px;
+            z-index: 3000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: .4s;
+            font-size: 13px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media(max-width:1100px) {
+
+            .products {
+                grid-template-columns: repeat(3,1fr);
+            }
+
+        }
+
+
+        @media(max-width:900px) {
+
+            body {
+                cursor: auto;
+            }
+
+            .cursor,
+            .cursor-ring,
+            .cursor-dot,
+            .mouse-glow {
+                display: none;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .hero-watch {
+                opacity: .25;
+                right: -100px;
+            }
+
+            .products {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .about-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 45px;
+            }
+
+        }
+
+
+        @media(max-width:600px) {
+
+            nav {
+                height: 68px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .hero {
+                min-height: 800px;
+            }
+
+            .hero h1 {
+                font-size: 58px;
+            }
+
+            .hero-watch {
+                width: 330px;
+                height: 330px;
+                right: -120px;
+                top: 62%;
+            }
+
+            .watch-face {
+                width: 210px;
+                height: 210px;
+            }
+
+            .products {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                display: block;
+            }
+
+            .section-description {
+                margin-top: 15px;
+            }
+
+            .about-text h2,
+            .contact-info h2 {
+                font-size: 42px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-form {
+                padding: 22px;
+            }
+
+            .footer-top {
+                display: block;
+            }
+
+            .socials {
+                margin-top: 25px;
+            }
+
+            .copyright {
+                display: block;
+                line-height: 2;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         CUSTOM CURSOR
+    ====================================================== -->
+
+    <div class="cursor"></div>
+    <div class="cursor-ring"></div>
+    <div class="mouse-glow"></div>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <header>
+
+        <div class="container">
+
+            <nav>
+
+                <a href="#" class="logo">
+                    KLATCH<span>.</span>
+                </a>
+
+                <ul class="nav-links">
+
+                    <li>
+                        <a href="#home">Home</a>
+                    </li>
+
+                    <li>
+                        <a href="#collection">Collection</a>
+                    </li>
+
+                    <li>
+                        <a href="#about">About</a>
+                    </li>
+
+                    <li>
+                        <a href="#contact">Contact</a>
+                    </li>
+
+                </ul>
+
+
+                <div class="nav-actions">
+
+                    <button
+                        class="icon-btn"
+                        onclick="openCart()">
+
+                        🛒
+
+                        <span
+                            class="cart-count"
+                            id="cartCount">
+                            0
+                        </span>
+
+                    </button>
+
+
+                    <button class="icon-btn menu-btn">
+                        ☰
+                    </button>
+
+                </div>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <main>
+
+        <section
+            class="hero"
+            id="home">
+
+            <div class="container">
+
+                <div class="hero-content">
+
+                    <div class="hero-small">
+                        The Art of Time
+                    </div>
+
+
+                    <h1>
+                        TIME<br>
+                        <span>IS POWER.</span>
+                    </h1>
+
+
+                    <p>
+                        Discover precision, elegance and character.
+                        KLATCH creates timepieces for those who
+                        don't simply watch time — they own it.
+                    </p>
+
+
+                    <div class="hero-buttons">
+
+                        <a
+                            href="#collection"
+                            class="btn btn-primary">
+
+                            EXPLORE COLLECTION
+
+                        </a>
+
+
+                        <a
+                            href="#about"
+                            class="btn btn-outline">
+
+                            OUR STORY
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="hero-watch">
+
+                <div class="watch-face">
+
+                    <div class="hand"></div>
+
+                    <div class="hand second"></div>
+
+                    <div class="center-dot"></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             COLLECTION
+        ====================================================== -->
+
+        <section id="collection">
+
+            <div class="container">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <div class="section-label">
+                            Selected Pieces
+                        </div>
+
+                        <h2 class="section-title">
+                            The KLATCH Collection
+                        </h2>
+
+                    </div>
+
+
+                    <p class="section-description">
+                        Twenty carefully selected timepieces
+                        created for different personalities,
+                        occasions and moments.
+                    </p>
+
+                </div>
+
+
+                <div class="collection-top">
+
+                    <div class="collection-count">
+                        SHOWING
+                        <span>20</span>
+                        TIMEPIECES
+                    </div>
+
+                </div>
+
+
+                <div class="products">
+
+
+                    <!-- 01 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-dark"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Chronograph
+                            </div>
+
+                            <h3 class="product-name">
+                                Obsidian One
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $299
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Obsidian One',299)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Obsidian One',299)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 02 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-red"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Automatic
+                            </div>
+
+                            <h3 class="product-name">
+                                Crimson X
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $449
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Crimson X',449)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Crimson X',449)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 03 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-silver"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Limited Edition
+                            </div>
+
+                            <h3 class="product-name">
+                                Eclipse Noir
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $599
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Eclipse Noir',599)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Eclipse Noir',599)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 04 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-gold"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Luxury
+                            </div>
+
+                            <h3 class="product-name">
+                                Imperial
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $729
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Imperial',729)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Imperial',729)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 05 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-steel"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Classic
+                            </div>
+
+                            <h3 class="product-name">
+                                Monarch
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $379
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Monarch',379)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Monarch',379)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 06 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-crimson"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Sport
+                            </div>
+
+                            <h3 class="product-name">
+                                Redline
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $329
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Redline',329)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Redline',329)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 07 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-dark"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Automatic
+                            </div>
+
+                            <h3 class="product-name">
+                                Phantom
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $489
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Phantom',489)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Phantom',489)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 08 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-silver"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Dress
+                            </div>
+
+                            <h3 class="product-name">
+                                Silverline
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $419
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Silverline',419)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Silverline',419)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 09 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-red"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Chronograph
+                            </div>
+
+                            <h3 class="product-name">
+                                Inferno
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $559
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Inferno',559)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Inferno',559)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 10 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-gold"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Premium
+                            </div>
+
+                            <h3 class="product-name">
+                                Aurelius
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $799
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Aurelius',799)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Aurelius',799)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 11 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-dark"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Minimal
+                            </div>
+
+                            <h3 class="product-name">
+                                Midnight
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $279
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Midnight',279)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Midnight',279)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 12 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-steel"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Heritage
+                            </div>
+
+                            <h3 class="product-name">
+                                Legacy
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $649
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Legacy',649)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Legacy',649)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 13 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-crimson"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Racing
+                            </div>
+
+                            <h3 class="product-name">
+                                Velocity
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $519
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Velocity',519)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Velocity',519)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 14 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-silver"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Classic
+                            </div>
+
+                            <h3 class="product-name">
+                                Prestige
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $699
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Prestige',699)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Prestige',699)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 15 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-red"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Limited
+                            </div>
+
+                            <h3 class="product-name">
+                                Scarlet
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $899
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Scarlet',899)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Scarlet',899)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 16 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-gold"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Luxury
+                            </div>
+
+                            <h3 class="product-name">
+                                Royal One
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $999
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Royal One',999)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Royal One',999)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 17 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-dark"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Modern
+                            </div>
+
+                            <h3 class="product-name">
+                                Onyx
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $459
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Onyx',459)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Onyx',459)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 18 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-steel"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Automatic
+                            </div>
+
+                            <h3 class="product-name">
+                                Titan
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $749
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Titan',749)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Titan',749)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 19 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-crimson"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Sport Luxury
+                            </div>
+
+                            <h3 class="product-name">
+                                Dominion
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $879
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('Dominion',879)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('Dominion',879)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- 20 -->
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            <div class="mini-watch watch-silver"></div>
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <div class="product-category">
+                                Signature
+                            </div>
+
+                            <h3 class="product-name">
+                                KLATCH One
+                            </h3>
+
+                            <div class="product-bottom">
+
+                                <div class="price">
+                                    $1,099
+                                </div>
+
+                                <button
+                                    class="add-btn"
+                                    onclick="addToCart('KLATCH One',1099)">
+                                    +
+                                </button>
+
+                            </div>
+
+                            <button
+                                class="btn btn-outline"
+                                style="width:100%;margin-top:15px;"
+                                onclick="openProduct('KLATCH One',1099)">
+                                VIEW DETAILS
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="collection-divider">
+                    <span>KLATCH • EST. 2026</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             ABOUT
+        ====================================================== -->
+
+        <section
+            class="about"
+            id="about">
+
+            <div class="container">
+
+                <div class="about-grid">
+
+
+                    <div class="about-image">
+
+                        <div class="large-watch"></div>
+
+                    </div>
+
+
+                    <div class="about-text">
+
+                        <div class="section-label">
+                            The Philosophy
+                        </div>
+
+
+                        <h2>
+                            Built for<br>
+                            <span class="red">timeless</span> moments.
+                        </h2>
+
+
+                        <p>
+                            At KLATCH, we believe a watch should be
+                            more than an instrument that tells time.
+                            It should become part of your identity.
+                        </p>
+
+
+                        <p>
+                            Every detail is designed with purpose —
+                            from the precision movement to the
+                            smallest finishing touch.
+                        </p>
+
+
+                        <a
+                            href="#contact"
+                            class="btn btn-primary">
+
+                            TALK TO US
+
+                        </a>
+
+
+                        <div class="stats">
+
+                            <div class="stat">
+
+                                <h3>10+</h3>
+
+                                <p>
+                                    Years Craft
+                                </p>
+
+                            </div>
+
+
+                            <div class="stat">
+
+                                <h3>25K+</h3>
+
+                                <p>
+                                    Customers
+                                </p>
+
+                            </div>
+
+
+                            <div class="stat">
+
+                                <h3>4.9</h3>
+
+                                <p>
+                                    Rating
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             CONTACT
+        ====================================================== -->
+
+        <section id="contact">
+
+            <div class="container">
+
+                <div class="contact-grid">
+
+
+                    <div class="contact-info">
+
+                        <div class="section-label">
+                            Get In Touch
+                        </div>
+
+
+                        <h2>
+                            Let's talk<br>
+                            <span class="red">time.</span>
+                        </h2>
+
+
+                        <p>
+                            Have a question about a watch,
+                            an order, or simply want to talk?
+                            Send a message directly to the admin.
+                        </p>
+
+
+                        <div class="contact-item">
+
+                            <div class="contact-icon">
+                                ✉
+                            </div>
+
+                            <div>
+
+                                <small>
+                                    Email
+                                </small>
+
+                                <span>
+                                    admin@klatchwatch.com
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="contact-item">
+
+                            <div class="contact-icon">
+                                ☎
+                            </div>
+
+                            <div>
+
+                                <small>
+                                    Phone
+                                </small>
+
+                                <span>
+                                    +880 1XXX-XXXXXX
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="contact-item">
+
+                            <div class="contact-icon">
+                                ◉
+                            </div>
+
+                            <div>
+
+                                <small>
+                                    Location
+                                </small>
+
+                                <span>
+                                    Dhaka, Bangladesh
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MESSAGE ADMIN -->
+
+                    <div class="contact-form">
+
+                        <h3>
+                            Message the Admin
+                        </h3>
+
+
+                        <form id="contactForm">
+
+                            <div class="form-row">
+
+                                <div class="input-group">
+
+                                    <label>
+                                        Your Name
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        placeholder="Enter your name"
+                                        required>
+
+                                </div>
+
+
+                                <div class="input-group">
+
+                                    <label>
+                                        Email
+                                    </label>
+
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        placeholder="you@example.com"
+                                        required>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="input-group">
+
+                                <label>
+                                    Subject
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="subject"
+                                    placeholder="What is this about?"
+                                    required>
+
+                            </div>
+
+
+                            <div class="input-group">
+
+                                <label>
+                                    Message
+                                </label>
+
+                                <textarea
+                                    id="message"
+                                    placeholder="Write your message..."
+                                    required></textarea>
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                                style="width:100%;">
+
+                                SEND MESSAGE →
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <div class="container">
+
+            <div class="footer-top">
+
+
+                <div>
+
+                    <div class="logo">
+                        KLATCH<span>.</span>
+                    </div>
+
+                    <p class="footer-text">
+                        Precision. Character. Time.
+                    </p>
+
+                </div>
+
+
+                <div class="socials">
+
+                    <a href="#">
+                        IG
+                    </a>
+
+                    <a href="#">
+                        FB
+                    </a>
+
+                    <a href="#">
+                        X
+                    </a>
+
+                    <a href="#">
+                        WA
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="copyright">
+
+                <span>
+                    © 2026 KLATCH. All rights reserved.
+                </span>
+
+                <span>
+                    Crafted with precision.
+                </span>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         PRODUCT MODAL
+    ====================================================== -->
+
+    <div
+        class="modal"
+        id="productModal">
+
+        <div class="modal-box">
+
+            <button
+                class="close"
+                onclick="closeModal('productModal')">
+
+                ×
+
+            </button>
+
+
+            <div class="modal-watch">
+
+                <div class="mini-watch"></div>
+
+            </div>
+
+
+            <h2 id="modalProductName">
+                Watch
+            </h2>
+
+
+            <p>
+                A sophisticated timepiece designed with
+                precision engineering, premium materials,
+                and a timeless aesthetic.
+            </p>
+
+
+            <div
+                class="modal-price"
+                id="modalProductPrice">
+
+                $299
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                id="modalAddButton">
+
+                ADD TO CART
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         CART MODAL
+    ====================================================== -->
+
+    <div
+        class="modal"
+        id="cartModal">
+
+        <div class="modal-box">
+
+            <button
+                class="close"
+                onclick="closeModal('cartModal')">
+
+                ×
+
+            </button>
+
+
+            <h2>
+                Your Cart
+            </h2>
+
+
+            <div id="cartItems"></div>
+
+
+            <div class="cart-total">
+
+                <span>
+                    Total
+                </span>
+
+                <strong id="cartTotal">
+                    $0
+                </strong>
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                style="width:100%;"
+                onclick="checkout()">
+
+                PROCEED TO CHECKOUT
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         TOAST
+    ====================================================== -->
+
+    <div
+        class="toast"
+        id="toast">
+
+        Added to your collection ✓
+
+    </div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+        /* =====================================================
+           CART
+        ====================================================== */
+
+        let cart = [];
+
+
+        function addToCart(name, price) {
+
+            cart.push({
+                name: name,
+                price: price
+            });
+
+            updateCart();
+
+            showToast(
+                name + " added to cart ✓"
+            );
+
+        }
+
+
+        function updateCart() {
+
+            document.getElementById(
+                "cartCount"
+            ).textContent = cart.length;
+
+
+            const container =
+                document.getElementById("cartItems");
+
+
+            const totalElement =
+                document.getElementById("cartTotal");
+
+
+            if (cart.length === 0) {
+
+                container.innerHTML =
+                    '<div class="empty-cart">Your cart is empty.</div>';
+
+                totalElement.textContent =
+                    "$0";
+
+                return;
+
+            }
+
+
+            container.innerHTML = "";
+
+            let total = 0;
+
+
+            cart.forEach((item, index) => {
+
+                total += item.price;
+
+
+                const div =
+                    document.createElement("div");
+
+
+                div.className =
+                    "cart-item";
+
+
+                div.innerHTML = `
+
+                    <div class="cart-item-info">
+
+                        <h4>
+                            ${item.name}
+                        </h4>
+
+                        <span>
+                            $${item.price}
+                        </span>
+
+                    </div>
+
+                    <button
+                        class="remove-btn"
+                        onclick="removeFromCart(${index})">
+
+                        Remove
+
+                    </button>
+
+                `;
+
+
+                container.appendChild(div);
+
+            });
+
+
+            totalElement.textContent =
+                "$" + total;
+
+        }
+
+
+        function removeFromCart(index) {
+
+            cart.splice(index, 1);
+
+            updateCart();
+
+            showToast(
+                "Item removed"
+            );
+
+        }
+
+
+        function openCart() {
+
+            updateCart();
+
+            document
+                .getElementById("cartModal")
+                .classList
+                .add("active");
+
+        }
+
+
+        /* =====================================================
+           PRODUCT MODAL
+        ====================================================== */
+
+        function openProduct(name, price) {
+
+            document
+                .getElementById("modalProductName")
+                .textContent = name;
+
+
+            document
+                .getElementById("modalProductPrice")
+                .textContent = "$" + price;
+
+
+            document
+                .getElementById("modalAddButton")
+                .onclick = function() {
+
+                    addToCart(
+                        name,
+                        price
+                    );
+
+                    closeModal(
+                        "productModal"
+                    );
+
+                };
+
+
+            document
+                .getElementById("productModal")
+                .classList
+                .add("active");
+
+        }
+
+
+        function closeModal(id) {
+
+            document
+                .getElementById(id)
+                .classList
+                .remove("active");
+
+        }
+
+
+        document
+            .querySelectorAll(".modal")
+            .forEach(modal => {
+
+                modal.addEventListener(
+                    "click",
+                    function(e) {
+
+                        if (
+                            e.target === modal
+                        ) {
+
+                            modal.classList.remove(
+                                "active"
+                            );
+
+                        }
+
+                    }
+                );
+
+            });
+
+
+        /* =====================================================
+           TOAST
+        ====================================================== */
+
+        function showToast(message) {
+
+            const toast =
+                document.getElementById("toast");
+
+
+            toast.textContent =
+                message;
+
+
+            toast.classList.add(
+                "show"
+            );
+
+
+            setTimeout(() => {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            }, 2500);
+
+        }
+
+
+        /* =====================================================
+           CONTACT FORM
+        ====================================================== */
+
+        document
+            .getElementById("contactForm")
+            .addEventListener(
+                "submit",
+                function(e) {
+
+                    e.preventDefault();
+
+
+                    const name =
+                        document.getElementById(
+                            "name"
+                        ).value;
+
+
+                    showToast(
+                        "Thanks " +
+                        name +
+                        "! Message received ✓"
+                    );
+
+
+                    this.reset();
+
+                }
+            );
+
+
+        /* =====================================================
+           CHECKOUT
+        ====================================================== */
+
+        function checkout() {
+
+            if (cart.length === 0) {
+
+                showToast(
+                    "Your cart is empty."
+                );
+
+                return;
+
+            }
+
+
+            showToast(
+                "Checkout system will be connected soon."
+            );
+
+        }
+
+
+        /* =====================================================
+           CUSTOM MOUSE CURSOR
+        ====================================================== */
+
+        const cursor =
+            document.querySelector(".cursor");
+
+
+        const cursorRing =
+            document.querySelector(".cursor-ring");
+
+
+        const mouseGlow =
+            document.querySelector(".mouse-glow");
+
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        let ringX = 0;
+        let ringY = 0;
+
+
+        document.addEventListener(
+            "mousemove",
+            (e) => {
+
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+
+
+                cursor.style.left =
+                    mouseX + "px";
+
+
+                cursor.style.top =
+                    mouseY + "px";
+
+
+                mouseGlow.style.left =
+                    mouseX + "px";
+
+
+                mouseGlow.style.top =
+                    mouseY + "px";
+
+            }
+        );
+
+
+        function animateCursor() {
+
+            ringX +=
+                (mouseX - ringX) * .15;
+
+
+            ringY +=
+                (mouseY - ringY) * .15;
+
+
+            cursorRing.style.left =
+                ringX + "px";
+
+
+            cursorRing.style.top =
+                ringY + "px";
+
+
+            requestAnimationFrame(
+                animateCursor
+            );
+
+        }
+
+
+        animateCursor();
+
+
+        /* =====================================================
+           CURSOR TRAIL
+        ====================================================== */
+
+        let lastTrailTime = 0;
+
+
+        document.addEventListener(
+            "mousemove",
+            (e) => {
+
+                const now =
+                    Date.now();
+
+
+                if (
+                    now - lastTrailTime < 35
+                ) {
+
+                    return;
+
+                }
+
+
+                lastTrailTime =
+                    now;
+
+
+                const dot =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                dot.className =
+                    "cursor-dot";
+
+
+                dot.style.left =
+                    e.clientX + "px";
+
+
+                dot.style.top =
+                    e.clientY + "px";
+
+
+                document.body.appendChild(
+                    dot
+                );
+
+
+                dot.animate(
+                    [
+                        {
+                            transform:
+                                "translate(-50%,-50%) scale(1)",
+                            opacity: .7
+                        },
+
+                        {
+                            transform:
+                                "translate(-50%,-50%) scale(0)",
+                            opacity: 0
+                        }
+                    ],
+                    {
+                        duration: 500,
+                        easing:
+                            "cubic-bezier(.2,.8,.2,1)"
+                    }
+                );
+
+
+                setTimeout(() => {
+
+                    dot.remove();
+
+                }, 500);
+
+            }
+        );
+
+
+        /* =====================================================
+           CURSOR HOVER EFFECT
+        ====================================================== */
+
+        const interactiveElements =
+            document.querySelectorAll(
+                "a, button, input, textarea, .product-card"
+            );
+
+
+        interactiveElements.forEach(
+            element => {
+
+                element.addEventListener(
+                    "mouseenter",
+                    () => {
+
+                        cursorRing.classList.add(
+                            "hover"
+                        );
+
+                    }
+                );
+
+
+                element.addEventListener(
+                    "mouseleave",
+                    () => {
+
+                        cursorRing.classList.remove(
+                            "hover"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           SCROLL REVEAL FOR PRODUCTS
+        ====================================================== */
+
+        const cards =
+            document.querySelectorAll(
+                ".product-card"
+            );
+
+
+        const observer =
+            new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(
+                        (entry, index) => {
+
+                            if (
+                                entry.isIntersecting
+                            ) {
+
+                                setTimeout(
+                                    () => {
+
+                                        entry.target.classList.add(
+                                            "visible"
+                                        );
+
+                                    },
+                                    index * 70
+                                );
+
+
+                                observer.unobserve(
+                                    entry.target
+                                );
+
+                            }
+
+                        }
+                    );
+
+                },
+                {
+                    threshold: .12
+                }
+            );
+
+
+        cards.forEach(
+            card => {
+
+                observer.observe(
+                    card
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           INITIALIZE
+        ====================================================== */
+
+        updateCart();
+
+    </script>
+
+</body>
+</html>
